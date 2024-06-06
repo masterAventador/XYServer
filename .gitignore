@@ -1,0 +1,5 @@
+.idea
+build
+bin
+CMakeUserPresets.json
+.DS_Store

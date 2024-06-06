@@ -1,1 +1,0 @@
-. "/Users/aventador/sourceCode/CPPTest/XYServer/build/Debug/generators/conanrunenv-debug-armv8.sh"
