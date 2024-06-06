@@ -1,0 +1,11 @@
+cmake_minimum_required(VERSION 3.28)
+project(XYServer)
+
+set(CMAKE_CXX_STANDARD 20)
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+
+find_package(Boost REQUIRED)
+
+add_executable(XYServer src/main.cpp)
+
+target_link_libraries(${PROJECT_NAME} boost::boost)
