@@ -118,7 +118,7 @@ handle_request(http::request<Body, http::basic_fields<Allocator>> &&req) {
     res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
     res.set(http::field::content_type, "application/json");
     res.keep_alive(req.keep_alive());
-    res.body() = R"({token:Hello啊，树哥~~~})";
+    res.body() = R"({"token":"Hello啊，树哥~~~"})";
     res.prepare_payload();
     return res;
 
