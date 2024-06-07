@@ -1,2 +1,2 @@
 # XYServer
- A C++ Project to practice my server programming skills
+ A Server Project to practice my C++ programming skills
