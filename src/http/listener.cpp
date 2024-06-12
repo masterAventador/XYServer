@@ -6,7 +6,6 @@
 #include <boost/asio/strand.hpp>
 #include <iostream>
 
-
 using std::cout;
 using std::endl;
 
@@ -72,55 +71,35 @@ std::string path_cat(beast::string_view base, beast::string_view path) {
 
 template<class Body, class Allocator>
 http::message_generator
-handle_request(http::request<Body, http::basic_fields<Allocator>> &&req) {
+handle_request(http::request<Body, http::basic_fields<Allocator>> &&request) {
 
     // Return a bad request response
-    auto const bad_request = [&req](beast::string_view why) {
-        http::response<http::string_body> res{http::status::bad_request, req.version()};
+    auto const bad_request = [&request](beast::string_view why) {
+        http::response<http::string_body> res{http::status::bad_request, request.version()};
         res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
         res.set(http::field::content_type, "text/html");
-        res.keep_alive(req.keep_alive());
+        res.keep_alive(request.keep_alive());
         res.body() = std::string(why);
         res.prepare_payload();
         return res;
     };
 
-    // Return a not found response
-    auto const not_found = [&req](beast::string_view target) {
-        http::response<http::string_body> res{http::status::not_found, req.version()};
-        res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-        res.set(http::field::content_type, "text/html");
-        res.keep_alive(req.keep_alive());
-        res.body() = "The Resource '" + std::string(target) + "' was not found.";
-        res.prepare_payload();
-        return res;
-    };
-
-    // Return a server error response
-    auto const server_error = [&req](beast::string_view what) {
-        http::response<http::string_body> res{http::status::internal_server_error, req.version()};
-        res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-        res.set(http::field::content_type, "text/html");
-        res.keep_alive(req.keep_alive());
-        res.body() = "An error occurred: '" + std::string(what) + "'";
-        res.prepare_payload();
-        return res;
-    };
-
-    // Make sure we can handle the method
-    if (req.method() != http::verb::get &&
-        req.method() != http::verb::post)
-        return bad_request("Unknown HTTP-method");
-
     cout << "receive a request!!" << endl;
 
-    http::response<http::string_body> res{http::status::ok, req.version()};
-    res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-    res.set(http::field::content_type, "application/json");
-    res.keep_alive(req.keep_alive());
-    res.body() = R"({"token":"Hello啊，树哥~~~"})";
-    res.prepare_payload();
-    return res;
+    // Make sure we can handle the method
+    if (request.method() != http::verb::get &&
+            request.method() != http::verb::post)
+        return bad_request("Unknown HTTP-method");
+
+//    http::response<http::string_body> res{http::status::ok, request.version()};
+//    res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+//    res.set(http::field::content_type, "application/json");
+//    res.keep_alive(request.keep_alive());
+//    res.body() = R"({"token":"Hello啊，树哥~~~"})";
+//    res.prepare_payload();
+//    return res;
+
+
 
 }
 
@@ -133,7 +112,7 @@ fail(beast::error_code ec, const char *what) {
 class session : public std::enable_shared_from_this<session> {
     beast::tcp_stream stream_;
     beast::flat_buffer buffer_;
-    http::request<http::string_body> req_;
+    http::request<http::buffer_body> req_;
 
 public:
     // Take ownership of the stream
@@ -164,7 +143,7 @@ public:
         stream_.expires_after(std::chrono::seconds(30));
 
         // Read a request
-        http::async_read(stream_,buffer_,req_,
+        http::async_read(stream_, buffer_, req_,
                          beast::bind_front_handler(
                                  &session::on_read,
                                  shared_from_this()));
@@ -180,14 +159,14 @@ public:
             return do_close();
 
         if (ec)
-            return fail(ec,"read");
+            return fail(ec, "read");
 
         // Send the response
         send_response(handle_request(std::move(req_)));
     }
 
     void
-    send_response(http::message_generator&& msg) {
+    send_response(http::message_generator &&msg) {
         bool keep_alive = msg.keep_alive();
 
         // Write the response
@@ -195,7 +174,7 @@ public:
                 stream_,
                 std::move(msg),
                 beast::bind_front_handler(
-                        &session::on_write,shared_from_this(),keep_alive));
+                        &session::on_write, shared_from_this(), keep_alive));
     }
 
     void
@@ -205,7 +184,7 @@ public:
         boost::ignore_unused(bytes_transferred);
 
         if (ec)
-            return fail(ec,"write");
+            return fail(ec, "write");
 
         if (!keep_alive) {
             // This means we should close the connection, usually because
@@ -221,7 +200,7 @@ public:
     do_close() {
         // Send a TCP shutdown
         beast::error_code ec;
-        stream_.socket().shutdown(tcp::socket ::shutdown_send,ec);
+        stream_.socket().shutdown(tcp::socket::shutdown_send, ec);
 
         // At this point the connection is closed gracefully
     }
