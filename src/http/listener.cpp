@@ -5,6 +5,7 @@
 #include "listener.h"
 #include <boost/asio/strand.hpp>
 #include <iostream>
+#include "responser.h"
 
 using std::cout;
 using std::endl;
@@ -91,15 +92,21 @@ handle_request(http::request<Body, http::basic_fields<Allocator>> &&request) {
             request.method() != http::verb::post)
         return bad_request("Unknown HTTP-method");
 
-//    http::response<http::string_body> res{http::status::ok, request.version()};
-//    res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-//    res.set(http::field::content_type, "application/json");
-//    res.keep_alive(request.keep_alive());
-//    res.body() = R"({"token":"Hello啊，树哥~~~"})";
-//    res.prepare_payload();
-//    return res;
+    http::response<http::buffer_body> res{http::status::ok, request.version()};
+    res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+    res.set(http::field::content_type, "application/x-protobuf");
+    res.keep_alive(request.keep_alive());
 
-
+    std::string what;
+    std::optional<PHM::response> responseBody = responser::makeResponse(request.body(),what);
+    if (responseBody) {
+        std::size_t size = responseBody->ByteSizeLong();
+        std::vector<std::byte> buffer(size);
+        responseBody->SerializeToArray(buffer.data(),static_cast<int>(size));
+        res.body().data = buffer.data();
+    }
+    res.prepare_payload();
+    return res;
 
 }
 

@@ -16,6 +16,8 @@ add_executable(XYServer src/main.cpp
         src/http/PBFiles/Login.pb.h
         src/http/responser.cpp
         src/http/responser.h
+        src/http/business_handler.cpp
+        src/http/business_handler.h
 )
 
 target_link_libraries(${PROJECT_NAME} boost::boost protobuf::protobuf)

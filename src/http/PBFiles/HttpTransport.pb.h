@@ -261,12 +261,11 @@ class response final : public ::google::protobuf::Message
 
   // accessors -------------------------------------------------------
   enum : int {
-    kMsgFieldNumber = 3,
-    kPayloadFieldNumber = 4,
-    kCmdFieldNumber = 1,
-    kCodeFieldNumber = 2,
+    kMsgFieldNumber = 2,
+    kPayloadFieldNumber = 3,
+    kCodeFieldNumber = 1,
   };
-  // string msg = 3;
+  // string msg = 2;
   void clear_msg() ;
   const std::string& msg() const;
   template <typename Arg_ = const std::string&, typename... Args_>
@@ -282,7 +281,7 @@ class response final : public ::google::protobuf::Message
   std::string* _internal_mutable_msg();
 
   public:
-  // .google.protobuf.Any payload = 4;
+  // .google.protobuf.Any payload = 3;
   bool has_payload() const;
   void clear_payload() ;
   const ::google::protobuf::Any& payload() const;
@@ -297,17 +296,7 @@ class response final : public ::google::protobuf::Message
   ::google::protobuf::Any* _internal_mutable_payload();
 
   public:
-  // .PHM.cmd cmd = 1;
-  void clear_cmd() ;
-  ::PHM::cmd cmd() const;
-  void set_cmd(::PHM::cmd value);
-
-  private:
-  ::PHM::cmd _internal_cmd() const;
-  void _internal_set_cmd(::PHM::cmd value);
-
-  public:
-  // .PHM.code code = 2;
+  // .PHM.code code = 1;
   void clear_code() ;
   ::PHM::code code() const;
   void set_code(::PHM::code value);
@@ -322,7 +311,7 @@ class response final : public ::google::protobuf::Message
   class _Internal;
   friend class ::google::protobuf::internal::TcParser;
   static const ::google::protobuf::internal::TcParseTable<
-      2, 4, 1,
+      2, 3, 1,
       24, 2>
       _table_;
 
@@ -347,7 +336,6 @@ class response final : public ::google::protobuf::Message
     mutable ::google::protobuf::internal::CachedSize _cached_size_;
     ::google::protobuf::internal::ArenaStringPtr msg_;
     ::google::protobuf::Any* payload_;
-    int cmd_;
     int code_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
@@ -677,29 +665,7 @@ inline void request::set_allocated_payload(::google::protobuf::Any* value) {
 
 // response
 
-// .PHM.cmd cmd = 1;
-inline void response::clear_cmd() {
-  ::google::protobuf::internal::TSanWrite(&_impl_);
-  _impl_.cmd_ = 0;
-}
-inline ::PHM::cmd response::cmd() const {
-  // @@protoc_insertion_point(field_get:PHM.response.cmd)
-  return _internal_cmd();
-}
-inline void response::set_cmd(::PHM::cmd value) {
-  _internal_set_cmd(value);
-  // @@protoc_insertion_point(field_set:PHM.response.cmd)
-}
-inline ::PHM::cmd response::_internal_cmd() const {
-  ::google::protobuf::internal::TSanRead(&_impl_);
-  return static_cast<::PHM::cmd>(_impl_.cmd_);
-}
-inline void response::_internal_set_cmd(::PHM::cmd value) {
-  ::google::protobuf::internal::TSanWrite(&_impl_);
-  _impl_.cmd_ = value;
-}
-
-// .PHM.code code = 2;
+// .PHM.code code = 1;
 inline void response::clear_code() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.code_ = 0;
@@ -721,7 +687,7 @@ inline void response::_internal_set_code(::PHM::code value) {
   _impl_.code_ = value;
 }
 
-// string msg = 3;
+// string msg = 2;
 inline void response::clear_msg() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.msg_.ClearToEmpty();
@@ -771,7 +737,7 @@ inline void response::set_allocated_msg(std::string* value) {
   // @@protoc_insertion_point(field_set_allocated:PHM.response.msg)
 }
 
-// .google.protobuf.Any payload = 4;
+// .google.protobuf.Any payload = 3;
 inline bool response::has_payload() const {
   bool value = (_impl_._has_bits_[0] & 0x00000001u) != 0;
   PROTOBUF_ASSUME(!value || _impl_.payload_ != nullptr);

@@ -32,7 +32,6 @@ inline constexpr response::Impl_::Impl_(
             &::google::protobuf::internal::fixed_address_empty_string,
             ::_pbi::ConstantInitialized()),
         payload_{nullptr},
-        cmd_{static_cast< ::PHM::cmd >(0)},
         code_{static_cast< ::PHM::code >(0)} {}
 
 template <typename>
@@ -95,11 +94,9 @@ const ::uint32_t
         ~0u,  // no _inlined_string_donated_
         ~0u,  // no _split_
         ~0u,  // no sizeof(Split)
-        PROTOBUF_FIELD_OFFSET(::PHM::response, _impl_.cmd_),
         PROTOBUF_FIELD_OFFSET(::PHM::response, _impl_.code_),
         PROTOBUF_FIELD_OFFSET(::PHM::response, _impl_.msg_),
         PROTOBUF_FIELD_OFFSET(::PHM::response, _impl_.payload_),
-        ~0u,
         ~0u,
         ~0u,
         0,
@@ -108,7 +105,7 @@ const ::uint32_t
 static const ::_pbi::MigrationSchema
     schemas[] ABSL_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
         {0, 10, -1, sizeof(::PHM::request)},
-        {12, 24, -1, sizeof(::PHM::response)},
+        {12, 23, -1, sizeof(::PHM::response)},
 };
 static const ::_pb::Message* const file_default_instances[] = {
     &::PHM::_request_default_instance_._instance,
@@ -119,11 +116,11 @@ const char descriptor_table_protodef_HttpTransport_2eproto[] ABSL_ATTRIBUTE_SECT
     "\n\023HttpTransport.proto\022\003PHM\032\031google/proto"
     "buf/any.proto\"G\n\007request\022\025\n\003cmd\030\001 \001(\0162\010."
     "PHM.cmd\022%\n\007payload\030\002 \001(\0132\024.google.protob"
-    "uf.Any\"n\n\010response\022\025\n\003cmd\030\001 \001(\0162\010.PHM.cm"
-    "d\022\027\n\004code\030\002 \001(\0162\t.PHM.code\022\013\n\003msg\030\003 \001(\t\022"
-    "%\n\007payload\030\004 \001(\0132\024.google.protobuf.Any*\036"
-    "\n\003cmd\022\014\n\010register\020\000\022\t\n\005login\020\001*\037\n\004code\022\013"
-    "\n\007success\020\000\022\n\n\006failed\020\001b\006proto3"
+    "uf.Any\"W\n\010response\022\027\n\004code\030\001 \001(\0162\t.PHM.c"
+    "ode\022\013\n\003msg\030\002 \001(\t\022%\n\007payload\030\003 \001(\0132\024.goog"
+    "le.protobuf.Any*\036\n\003cmd\022\014\n\010register\020\000\022\t\n\005"
+    "login\020\001*\037\n\004code\022\013\n\007success\020\000\022\n\n\006failed\020\001"
+    "b\006proto3"
 };
 static const ::_pbi::DescriptorTable* const descriptor_table_HttpTransport_2eproto_deps[1] =
     {
@@ -133,7 +130,7 @@ static ::absl::once_flag descriptor_table_HttpTransport_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_HttpTransport_2eproto = {
     false,
     false,
-    311,
+    288,
     descriptor_table_protodef_HttpTransport_2eproto,
     "HttpTransport.proto",
     &descriptor_table_HttpTransport_2eproto_once,
@@ -455,13 +452,7 @@ response::response(
   _impl_.payload_ = (cached_has_bits & 0x00000001u) ? ::google::protobuf::Message::CopyConstruct<::google::protobuf::Any>(
                               arena, *from._impl_.payload_)
                         : nullptr;
-  ::memcpy(reinterpret_cast<char *>(&_impl_) +
-               offsetof(Impl_, cmd_),
-           reinterpret_cast<const char *>(&from._impl_) +
-               offsetof(Impl_, cmd_),
-           offsetof(Impl_, code_) -
-               offsetof(Impl_, cmd_) +
-               sizeof(Impl_::code_));
+  _impl_.code_ = from._impl_.code_;
 
   // @@protoc_insertion_point(copy_constructor:PHM.response)
 }
@@ -513,15 +504,15 @@ response::GetClassData() const {
   return _data_.base();
 }
 PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<2, 4, 1, 24, 2> response::_table_ = {
+const ::_pbi::TcParseTable<2, 3, 1, 24, 2> response::_table_ = {
   {
     PROTOBUF_FIELD_OFFSET(response, _impl_._has_bits_),
     0, // no _extensions_
-    4, 24,  // max_field_number, fast_idx_mask
+    3, 24,  // max_field_number, fast_idx_mask
     offsetof(decltype(_table_), field_lookup_table),
-    4294967280,  // skipmap
+    4294967288,  // skipmap
     offsetof(decltype(_table_), field_entries),
-    4,  // num_field_entries
+    3,  // num_field_entries
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_response_default_instance_._instance,
@@ -531,37 +522,32 @@ const ::_pbi::TcParseTable<2, 4, 1, 24, 2> response::_table_ = {
     ::_pbi::TcParser::GetTable<::PHM::response>(),  // to_prefetch
     #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
   }, {{
-    // .google.protobuf.Any payload = 4;
-    {::_pbi::TcParser::FastMtS1,
-     {34, 0, 0, PROTOBUF_FIELD_OFFSET(response, _impl_.payload_)}},
-    // .PHM.cmd cmd = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(response, _impl_.cmd_), 63>(),
-     {8, 63, 0, PROTOBUF_FIELD_OFFSET(response, _impl_.cmd_)}},
-    // .PHM.code code = 2;
+    {::_pbi::TcParser::MiniParse, {}},
+    // .PHM.code code = 1;
     {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(response, _impl_.code_), 63>(),
-     {16, 63, 0, PROTOBUF_FIELD_OFFSET(response, _impl_.code_)}},
-    // string msg = 3;
+     {8, 63, 0, PROTOBUF_FIELD_OFFSET(response, _impl_.code_)}},
+    // string msg = 2;
     {::_pbi::TcParser::FastUS1,
-     {26, 63, 0, PROTOBUF_FIELD_OFFSET(response, _impl_.msg_)}},
+     {18, 63, 0, PROTOBUF_FIELD_OFFSET(response, _impl_.msg_)}},
+    // .google.protobuf.Any payload = 3;
+    {::_pbi::TcParser::FastMtS1,
+     {26, 0, 0, PROTOBUF_FIELD_OFFSET(response, _impl_.payload_)}},
   }}, {{
     65535, 65535
   }}, {{
-    // .PHM.cmd cmd = 1;
-    {PROTOBUF_FIELD_OFFSET(response, _impl_.cmd_), -1, 0,
-    (0 | ::_fl::kFcSingular | ::_fl::kOpenEnum)},
-    // .PHM.code code = 2;
+    // .PHM.code code = 1;
     {PROTOBUF_FIELD_OFFSET(response, _impl_.code_), -1, 0,
     (0 | ::_fl::kFcSingular | ::_fl::kOpenEnum)},
-    // string msg = 3;
+    // string msg = 2;
     {PROTOBUF_FIELD_OFFSET(response, _impl_.msg_), -1, 0,
     (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
-    // .google.protobuf.Any payload = 4;
+    // .google.protobuf.Any payload = 3;
     {PROTOBUF_FIELD_OFFSET(response, _impl_.payload_), _Internal::kHasBitsOffset + 0, 0,
     (0 | ::_fl::kFcOptional | ::_fl::kMessage | ::_fl::kTvTable)},
   }}, {{
     {::_pbi::TcParser::GetTable<::google::protobuf::Any>()},
   }}, {{
-    "\14\0\0\3\0\0\0\0"
+    "\14\0\3\0\0\0\0\0"
     "PHM.response"
     "msg"
   }},
@@ -580,9 +566,7 @@ PROTOBUF_NOINLINE void response::Clear() {
     ABSL_DCHECK(_impl_.payload_ != nullptr);
     _impl_.payload_->Clear();
   }
-  ::memset(&_impl_.cmd_, 0, static_cast<::size_t>(
-      reinterpret_cast<char*>(&_impl_.code_) -
-      reinterpret_cast<char*>(&_impl_.cmd_)) + sizeof(_impl_.code_));
+  _impl_.code_ = 0;
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
 }
@@ -594,33 +578,26 @@ PROTOBUF_NOINLINE void response::Clear() {
   ::uint32_t cached_has_bits = 0;
   (void)cached_has_bits;
 
-  // .PHM.cmd cmd = 1;
-  if (this->_internal_cmd() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteEnumToArray(
-        1, this->_internal_cmd(), target);
-  }
-
-  // .PHM.code code = 2;
+  // .PHM.code code = 1;
   if (this->_internal_code() != 0) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteEnumToArray(
-        2, this->_internal_code(), target);
+        1, this->_internal_code(), target);
   }
 
-  // string msg = 3;
+  // string msg = 2;
   if (!this->_internal_msg().empty()) {
     const std::string& _s = this->_internal_msg();
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
         _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "PHM.response.msg");
-    target = stream->WriteStringMaybeAliased(3, _s, target);
+    target = stream->WriteStringMaybeAliased(2, _s, target);
   }
 
   cached_has_bits = _impl_._has_bits_[0];
-  // .google.protobuf.Any payload = 4;
+  // .google.protobuf.Any payload = 3;
   if (cached_has_bits & 0x00000001u) {
     target = ::google::protobuf::internal::WireFormatLite::InternalWriteMessage(
-        4, *_impl_.payload_, _impl_.payload_->GetCachedSize(), target, stream);
+        3, *_impl_.payload_, _impl_.payload_->GetCachedSize(), target, stream);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -641,26 +618,20 @@ PROTOBUF_NOINLINE void response::Clear() {
   (void) cached_has_bits;
 
   ::_pbi::Prefetch5LinesFrom7Lines(reinterpret_cast<const void*>(this));
-  // string msg = 3;
+  // string msg = 2;
   if (!this->_internal_msg().empty()) {
     total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
                                     this->_internal_msg());
   }
 
-  // .google.protobuf.Any payload = 4;
+  // .google.protobuf.Any payload = 3;
   cached_has_bits = _impl_._has_bits_[0];
   if (cached_has_bits & 0x00000001u) {
     total_size +=
         1 + ::google::protobuf::internal::WireFormatLite::MessageSize(*_impl_.payload_);
   }
 
-  // .PHM.cmd cmd = 1;
-  if (this->_internal_cmd() != 0) {
-    total_size += 1 +
-                  ::_pbi::WireFormatLite::EnumSize(this->_internal_cmd());
-  }
-
-  // .PHM.code code = 2;
+  // .PHM.code code = 1;
   if (this->_internal_code() != 0) {
     total_size += 1 +
                   ::_pbi::WireFormatLite::EnumSize(this->_internal_code());
@@ -691,9 +662,6 @@ void response::MergeImpl(::google::protobuf::MessageLite& to_msg, const ::google
     } else {
       _this->_impl_.payload_->MergeFrom(*from._impl_.payload_);
     }
-  }
-  if (from._internal_cmd() != 0) {
-    _this->_impl_.cmd_ = from._impl_.cmd_;
   }
   if (from._internal_code() != 0) {
     _this->_impl_.code_ = from._impl_.code_;

@@ -14,20 +14,11 @@
 using beast_buffer = boost::beast::http::buffer_body::value_type;
 using protobuf_message = google::protobuf::Message;
 
-namespace business_responser {
-    // 注册
-    std::shared_ptr<PHM::RegisterResp> handleRegister(std::shared_ptr<PHM::Register>&& p) {
-        std::shared_ptr<PHM::RegisterResp> resp = std::make_shared<PHM::RegisterResp>();
-        resp->set_token(p->account() + p->pwd());
-        return resp;
-    }
-}
 
 class responser {
 public:
     static std::optional<PHM::response>
     makeResponse(const beast_buffer& requestBody,
-                 boost::beast::http::status &ss,
                  std::string &what);
 
 private:
