@@ -1,12 +1,16 @@
-rm -r build
-conan profile detect --force
-conan install . --build=missing -s build_type=Release
 
-cmake -DCMAKE_BUILD_TYPE=Release --preset conan-release
-cmake --build build/Release --config Release -j10
+build_script_path=build/Release/generators
+cmake_cache_path=build/Release
+bin_path=linux_bin
 
-pkill XYServer
+conan profile detect --name=ubuntu
+conan install . --build=missing -s build_type=Release --profile=ubuntu
 
-echo 'Starting the Server now !~!~'
+source $build_script_path/conanbuild.sh
 
-nohup ./bin/XYServer > output.log 2>&1 &
+cmake -DCMAKE_BUILD_TYPE=Release -DEXECUTABLE_OUTPUT_PATH=$bin_path --preset conan-release
+cmake --build $cmake_cache_path
+
+source $build_script_path/deactivate_conanbuild.sh
+
+#nohup ./bin/XYServer > output.log 2>&1 &
