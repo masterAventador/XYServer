@@ -3,3 +3,4 @@ build
 local_bin
 CMakeUserPresets.json
 .DS_Store
+output.log
