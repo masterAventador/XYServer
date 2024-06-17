@@ -89,7 +89,7 @@ handle_request(http::request<Body, http::basic_fields<Allocator>> &&request) {
 
     // Make sure we can handle the method
     if (request.method() != http::verb::get &&
-            request.method() != http::verb::post)
+        request.method() != http::verb::post)
         return bad_request("Unknown HTTP-method");
 
     http::response<http::buffer_body> res{http::status::ok, request.version()};
@@ -98,12 +98,13 @@ handle_request(http::request<Body, http::basic_fields<Allocator>> &&request) {
     res.keep_alive(request.keep_alive());
 
     std::string what;
-    std::optional<PHM::response> responseBody = responser::makeResponse(request.body(),what);
+    std::optional<PHM::response> responseBody = responser::makeResponse(request.body(), what);
     if (responseBody) {
         std::size_t size = responseBody->ByteSizeLong();
         std::vector<std::byte> buffer(size);
-        responseBody->SerializeToArray(buffer.data(),static_cast<int>(size));
+        responseBody->SerializeToArray(buffer.data(), static_cast<int>(size));
         res.body().data = buffer.data();
+        res.body().size = buffer.size();
     }
     res.prepare_payload();
     return res;
@@ -119,7 +120,9 @@ fail(beast::error_code ec, const char *what) {
 class session : public std::enable_shared_from_this<session> {
     beast::tcp_stream stream_;
     beast::flat_buffer buffer_;
+    http::request_parser<http::buffer_body> parser_;
     http::request<http::buffer_body> req_;
+    std::vector<std::byte> body_;
 
 public:
     // Take ownership of the stream
@@ -136,40 +139,61 @@ public:
         // thread-safe by default.
         net::dispatch(stream_.get_executor(),
                       beast::bind_front_handler(
-                              &session::do_read,
+                              &session::read_header,
                               shared_from_this()));
     }
 
     void
-    do_read() {
+    read_header() {
         // Make the request empty before reading,
         // otherwise the operation behavior is undefined.
+//        parser_.get() = {};
         req_ = {};
-
         // Set the timeout.
         stream_.expires_after(std::chrono::seconds(30));
 
-        // Read a request
-        http::async_read(stream_, buffer_, req_,
-                         beast::bind_front_handler(
-                                 &session::on_read,
-                                 shared_from_this()));
+        auto self = shared_from_this();
+        http::async_read_header(stream_, buffer_, parser_,
+                                [self](beast::error_code ec, std::size_t bytes_transferred) {
+                                    if (ec) {
+                                        return fail(ec, "read_header");
+                                    }
+
+                                    beast::string_view content_length = self->parser_.get()[http::field::content_length];
+
+                                    if (content_length.empty()) {
+                                        return fail(beast::error_code{}, "no content length");
+                                    }
+
+                                    std::size_t body_size = std::stoul(content_length);
+                                    self->body_.resize(body_size);
+                                    self->parser_.get().body().data = self->body_.data();
+                                    self->parser_.get().body().size = self->body_.size();
+                                    self->parser_.get().body().more = false;
+                                    self->read_body();
+                                });
     }
 
+
     void
-    on_read(beast::error_code ec,
-            std::size_t bytes_transferred) {
-        boost::ignore_unused(bytes_transferred);
+    read_body() {
+        // Read a request
+        auto self = shared_from_this();
+        http::async_read(stream_, buffer_, parser_,
+                         [self](beast::error_code ec, std::size_t byte_transferred) {
+                            if (ec == http::error::end_of_stream) {
+                                return self->do_close();
+                            }
+                            if (ec == http::error::bad_method) {
+                                return fail(ec,"read_body");
+                            }
 
-        // This means they closed the connection
-        if (ec == http::error::end_of_stream)
-            return do_close();
-
-        if (ec)
-            return fail(ec, "read");
-
-        // Send the response
-        send_response(handle_request(std::move(req_)));
+                            if (self->parser_.get().body().more) {
+                                // TODO: need to call read_body() recursively.
+                                return fail(beast::error_code{},"read_body_need_buffer");
+                            }
+                            self->send_response(handle_request(std::move(self->parser_.get())));
+                         });
     }
 
     void
@@ -177,6 +201,7 @@ public:
         bool keep_alive = msg.keep_alive();
 
         // Write the response
+        auto self = shared_from_this();
         beast::async_write(
                 stream_,
                 std::move(msg),
@@ -200,7 +225,7 @@ public:
         }
 
         // Read another request
-        do_read();
+        read_header();
     }
 
     void
