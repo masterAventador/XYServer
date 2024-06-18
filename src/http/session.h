@@ -18,8 +18,8 @@ public:
 
 private:
     void did_read(beast::error_code ec,std::size_t byte_transferred);
-
-    static http::message_generator makeResponse(http::request<http::string_body>&& req);
+    void close();
+    static http::message_generator makeResponse(http::request<http::string_body>& req);
 
 };
 

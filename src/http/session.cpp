@@ -22,27 +22,37 @@ void session::run() {
 void session::did_read(beast::error_code ec, std::size_t byte_transferred) {
     boost::ignore_unused(byte_transferred);
     if (ec == http::error::end_of_stream) {
-        stream_.socket().shutdown(tcp::socket::shutdown_send);
+        close();
     }
     if (ec) {
         reportError(ec,"session_read");
         return;
     }
 
-    http::message_generator res = makeResponse(http::request<http::string_body>());
-
+    http::message_generator res = makeResponse(req_);
     auto self = shared_from_this();
     beast::async_write(stream_,std::move(res),[self](beast::error_code ec,std::size_t byte_transferred){
         if (ec) {
             reportError(ec,"session_write");
             return;
         }
+
+
         std::cout << "write response successfully!!" << std::endl;
+        if (!self->req_.keep_alive()) {
+            self->close();
+        }
     });
 }
 
+void session::close() {
+    stream_.socket().shutdown(boost::asio::socket_base::shutdown_send);
+}
 
-http::message_generator session::makeResponse(http::request<http::string_body>&& req) {
+http::message_generator session::makeResponse(http::request<http::string_body>& req) {
+
+    
+
 
     http::response<http::string_body> res {http::status::ok,req.version()};
     res.set(http::field::server,BOOST_BEAST_VERSION_STRING);
