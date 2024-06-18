@@ -31,13 +31,14 @@ void session::did_read(beast::error_code ec, std::size_t byte_transferred) {
 
     http::message_generator res = makeResponse(http::request<http::string_body>());
 
-
     auto self = shared_from_this();
-    http::async_write(stream_,res,beast::bind_front_handler(&session::on_write,shared_from_this()));
-}
-
-void session::on_write(beast::error_code ec,std::size_t byte_transferred) {
-    
+    beast::async_write(stream_,std::move(res),[self](beast::error_code ec,std::size_t byte_transferred){
+        if (ec) {
+            reportError(ec,"session_write");
+            return;
+        }
+        std::cout << "write response successfully!!" << std::endl;
+    });
 }
 
 
@@ -47,7 +48,7 @@ http::message_generator session::makeResponse(http::request<http::string_body>&&
     res.set(http::field::server,BOOST_BEAST_VERSION_STRING);
     res.set(http::field::content_type,"text/html");
     res.keep_alive(req.keep_alive());
-
+    res.body() = R"({"token":"hello啊，树哥~~~"})";
     res.prepare_payload();
     return res;
 }

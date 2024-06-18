@@ -19,8 +19,7 @@ public:
 private:
     void did_read(beast::error_code ec,std::size_t byte_transferred);
 
-    http::message_generator makeResponse(http::request<http::string_body>&& req);
-    void session::on_write(beast::error_code ec,std::size_t byte_transferred);
+    static http::message_generator makeResponse(http::request<http::string_body>&& req);
 
 };
 
