@@ -42,6 +42,9 @@ void session::did_read(beast::error_code ec, std::size_t byte_transferred) {
         if (!self->req_.keep_alive()) {
             self->close();
         }
+
+        // TODO: I know this makes all requests execute serially;I will optimize it very soon.
+        self->run();
     });
 }
 
@@ -50,8 +53,6 @@ void session::close() {
 }
 
 http::message_generator session::makeResponse(http::request<http::string_body>& req) {
-
-    
 
 
     http::response<http::string_body> res {http::status::ok,req.version()};
