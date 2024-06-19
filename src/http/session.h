@@ -17,9 +17,12 @@ public:
     void run();
 
 private:
-    void did_read(beast::error_code ec,std::size_t byte_transferred);
+    void do_read();
+    void on_read(beast::error_code ec,std::size_t byte_transferred);
+    void do_write();
+    void did_write(bool keep_alive,beast::error_code ec,std::size_t byte_transferred);
     void close();
-    static http::message_generator makeResponse(http::request<http::string_body>& req);
+    static http::message_generator makeResponse(const http::request<http::string_body>& req);
 
 };
 

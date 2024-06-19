@@ -16,7 +16,7 @@ namespace net = boost::asio;
 namespace http = beast::http;
 using tcp = net::ip::tcp;
 
-inline void reportError(beast::error_code ec,std::string&& step) {
+inline void reportError(beast::error_code ec,const std::string& step) {
     std::cerr << step << ":" << ec.what() << std::endl;
 }
 
