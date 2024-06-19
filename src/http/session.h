@@ -22,8 +22,9 @@ private:
     void do_write();
     void did_write(bool keep_alive,beast::error_code ec,std::size_t byte_transferred);
     void close();
-    static http::message_generator makeResponse(const http::request<http::string_body>& req);
 
+private:
+    static http::message_generator make_response(const http::request<http::string_body> &req);
 };
 
 

@@ -19,6 +19,8 @@ add_executable(XYServer src/main.cpp
         src/http/session.cpp
         src/http/session.h
         src/http/boost_aliases.h
+        src/http/payloader.cpp
+        src/http/payloader.h
 )
 
 target_link_libraries(${PROJECT_NAME} boost::boost protobuf::protobuf)

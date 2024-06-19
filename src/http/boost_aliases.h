@@ -16,6 +16,8 @@ namespace net = boost::asio;
 namespace http = beast::http;
 using tcp = net::ip::tcp;
 
+using g_message = google::protobuf::Message;
+
 inline void reportError(beast::error_code ec,const std::string& step) {
     std::cerr << step << ":" << ec.what() << std::endl;
 }
