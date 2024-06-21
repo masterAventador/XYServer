@@ -14,8 +14,10 @@ cmake --build $cmake_cache_path
 
 source $build_script_path/deactivate_conanbuild.sh
 
+ssh $server_address 'pkill XYServer'
+
 scp ./linux_bin/XYServer $server_address:/root/deploy/
 
-#ssh $server_address 'cd deploy; pkill XYServer; nohup ./XYServer > output.log 2>&1 & '
+ssh $server_address 'cd deploy; nohup ./XYServer > output.log 2>&1 & '
 #
 #echo "Server start...!!!!"
