@@ -16,12 +16,6 @@ source $build_script_path/deactivate_conanbuild.sh
 
 scp ./linux_bin/XYServer $server_address:/root/deploy/
 
-ssh $server_address
-
-cd deploy || echo "cd deploy error!!"
-
-pkill XYServer
-
-nohup ./XYServer > output.log 2>&1 &
-
-echo "Server start...!!!!"
+#ssh $server_address 'cd deploy; pkill XYServer; nohup ./XYServer > output.log 2>&1 & '
+#
+#echo "Server start...!!!!"

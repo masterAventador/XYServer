@@ -1,6 +1,7 @@
 .idea
 build
 local_bin
+linux_bin
 CMakeUserPresets.json
 .DS_Store
 output.log
