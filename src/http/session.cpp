@@ -88,6 +88,7 @@ http::message_generator session::make_response(const http::request<http::string_
             pb_response.mutable_payload()->PackFrom(*payload_msg);
         }
         res.body() = pb_response.SerializeAsString();
+        res.prepare_payload();
         return res;
     };
 

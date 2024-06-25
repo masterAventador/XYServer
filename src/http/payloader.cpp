@@ -9,7 +9,7 @@ using namespace std;
 
 std::shared_ptr<PHM::RegisterResp> register_business(PHM::Register& req) {
     auto res = make_shared<PHM::RegisterResp>();
-    res->set_token(req.account() + req.pwd());
+    res->set_token(req.account() + req.pwd() + "wswswsws");
     return res;
 }
 

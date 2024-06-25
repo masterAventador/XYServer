@@ -19,5 +19,5 @@ ssh $server_address 'pkill XYServer'
 scp ./linux_bin/XYServer $server_address:/root/deploy/
 
 ssh $server_address 'cd deploy; nohup ./XYServer > output.log 2>&1 & '
-#
-#echo "Server start...!!!!"
+
+echo 'Server has been started...😋'
