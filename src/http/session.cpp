@@ -103,14 +103,14 @@ http::message_generator session::make_response(const http::request<http::string_
         errMsg = "PB serialization failed at the business layer";
     }
 
-    std::shared_ptr<g_message> resp_payload_cls = payloader::generate(pb_req.cmd(),req_payload_cls);
+    std::shared_ptr<g_message> resp_payload_cls = payloader::generate(pb_req.cmd(), req_payload_cls);
     if (!resp_payload_cls) {
         errMsg = "PB payload generate failed";
     }
 
     if (!errMsg.empty()) {
-        reportError(beast::error_code{},errMsg);
-        return httpResponse(nullptr,PHM::failed,errMsg);
+        reportError(beast::error_code{}, errMsg);
+        return httpResponse(nullptr, PHM::failed, errMsg);
     }
 
     return httpResponse(resp_payload_cls.get());
