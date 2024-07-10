@@ -10,7 +10,7 @@
 class payloader {
 public:
     static std::shared_ptr<g_message> business_ptr(PHM::request& req);
-    static std::shared_ptr<g_message> generate(PHM::cmd c, std::shared_ptr<g_message>& payload);
+    static std::shared_ptr<g_message> generate(PHM::cmd c, std::shared_ptr<g_message>& payload,PHM::code& code,std::string& errMsg);
 };
 
 

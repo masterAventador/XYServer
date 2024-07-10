@@ -4,6 +4,7 @@
 
 #include "session.h"
 #include "payloader.h"
+#include "http_errorMsg.h"
 
 session::session(tcp::socket &sc) : stream_(std::move(sc)) {
 
@@ -93,24 +94,22 @@ http::message_generator session::make_response(const http::request<http::string_
     };
 
     PHM::request pb_req;
+    PHM::code code{PHM::success};
     std::string errMsg;
     if (!pb_req.ParseFromString(req.body())) {
-        errMsg = "PB serialization failed at the transport layer";
+        errMsg = httpMessage::transportDeserialization;
     }
 
     std::shared_ptr<g_message> req_payload_cls = payloader::business_ptr(pb_req);
     if (!pb_req.payload().UnpackTo(req_payload_cls.get())) {
-        errMsg = "PB serialization failed at the business layer";
+        errMsg = httpMessage::businessDeserialization;
     }
 
-    std::shared_ptr<g_message> resp_payload_cls = payloader::generate(pb_req.cmd(), req_payload_cls);
-    if (!resp_payload_cls) {
-        errMsg = "PB payload generate failed";
-    }
+    std::shared_ptr<g_message> resp_payload_cls = payloader::generate(pb_req.cmd(), req_payload_cls, code, errMsg);
 
-    if (!errMsg.empty()) {
+    if (code != PHM::success || !errMsg.empty()) {
         reportError(beast::error_code{}, errMsg);
-        return httpResponse(nullptr, PHM::failed, errMsg);
+        return httpResponse(nullptr, code, errMsg);
     }
 
     return httpResponse(resp_payload_cls.get());
