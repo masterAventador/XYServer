@@ -4,6 +4,8 @@
 
 #include "payloader.h"
 #include "http_errorMsg.h"
+#include "businessHandler/b_login.h"
+#include "businessHandler/b_register.h"
 
 using namespace std;
 
@@ -25,7 +27,7 @@ std::shared_ptr<PHM::LoginResp> login_business(PHM::Login &req, PHM::code &code,
     return res;
 }
 
-std::shared_ptr<g_message> payloader::business_ptr(PHM::request &req) {
+std::shared_ptr<g_message> business_ptr(PHM::request &req) {
 
     switch (req.cmd()) {
         case PHM::register_:
@@ -40,14 +42,22 @@ std::shared_ptr<g_message> payloader::business_ptr(PHM::request &req) {
 }
 
 std::shared_ptr<g_message>
-payloader::generate(PHM::cmd c, std::shared_ptr<g_message> &payload, PHM::code &code, std::string &errMsg) {
-    switch (c) {
-        case PHM::register_:
-            return register_business(*dynamic_pointer_cast<PHM::Register>(payload), code, errMsg);
-        case PHM::login:
-            return login_business(*dynamic_pointer_cast<PHM::Login>(payload), code, errMsg);
-        default:
-            return nullptr;
+payloader::generate(PHM::request& req,PHM::code& c,std::string& errMsg) {
+    std::shared_ptr<g_message> req_payload_cls = business_ptr(req);
+    if (req_payload_cls == nullptr) {
+        c = PHM::failed;
+        errMsg = httpMessage::businessDeserialization;
+        return nullptr;
     }
+    req.mutable_payload()->UnpackTo(req_payload_cls.get());
+    switch (req.cmd()) {
+        case PHM::register_:
+            return b_register::response(*dynamic_pointer_cast<PHM::Register>(req_payload_cls),c,errMsg);
+        case PHM::login:
+            return b_login::response(*dynamic_pointer_cast<PHM::Login>(req_payload_cls),c,errMsg);
+        default:
+            break;
+    }
+
 }
 

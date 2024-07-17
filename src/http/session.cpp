@@ -100,12 +100,7 @@ http::message_generator session::make_response(const http::request<http::string_
         errMsg = httpMessage::transportDeserialization;
     }
 
-    std::shared_ptr<g_message> req_payload_cls = payloader::business_ptr(pb_req);
-    if (!pb_req.payload().UnpackTo(req_payload_cls.get())) {
-        errMsg = httpMessage::businessDeserialization;
-    }
-
-    std::shared_ptr<g_message> resp_payload_cls = payloader::generate(pb_req.cmd(), req_payload_cls, code, errMsg);
+    std::shared_ptr<g_message> resp_payload_cls = payloader::generate(pb_req, code, errMsg);
 
     if (code != PHM::success || !errMsg.empty()) {
         reportError(beast::error_code{}, errMsg);

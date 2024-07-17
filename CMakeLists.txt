@@ -26,6 +26,10 @@ add_executable(XYServer src/main.cpp
         src/http/payloader.cpp
         src/http/payloader.h
         src/http/http_errorMsg.h
+        src/http/businessHandler/b_register.cpp
+        src/http/businessHandler/b_register.h
+        src/http/businessHandler/b_login.cpp
+        src/http/businessHandler/b_login.h
 )
 
 target_link_libraries(${PROJECT_NAME}
