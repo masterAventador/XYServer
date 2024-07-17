@@ -1,3 +1,0 @@
-[submodule "ThirdLibs/MMKV"]
-	path = ThirdLibs/MMKV
-	url = https://github.com/Tencent/MMKV.git

@@ -6,9 +6,6 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/local_bin CACHE PATH
         "Output directory for executables,the release_build.sh will change it to 'linux_bin',so we cache this variable
           to make sure it works!")
 
-
-add_subdirectory(ThirdLibs/MMKV/POSIX/src mmkv)
-
 find_package(Boost REQUIRED)
 find_package(protobuf REQUIRED)
 
@@ -38,5 +35,4 @@ target_link_libraries(${PROJECT_NAME}
         protobuf::protobuf
 
         #custom packages
-        mmkv
 )
