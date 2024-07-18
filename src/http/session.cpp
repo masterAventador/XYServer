@@ -5,6 +5,7 @@
 #include "session.h"
 #include "payloader.h"
 #include "http_errorMsg.h"
+#include "../utils.h"
 
 session::session(tcp::socket &sc) : stream_(std::move(sc)) {
 
@@ -48,7 +49,7 @@ void session::did_write(bool keep_alive, beast::error_code ec, std::size_t byte_
         return;
     }
 
-    std::cout << "write response successfully!!" << std::endl;
+    reportLog("write response successfully!!");
 
     return close();
 

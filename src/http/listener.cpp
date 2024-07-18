@@ -6,6 +6,7 @@
 #include <iostream>
 #include <boost/asio.hpp>
 #include "session.h"
+#include "../utils.h"
 
 
 listener::listener(net::io_context &ioc, const tcp::endpoint &ep) : ioc_(ioc), acc_(net::make_strand(ioc)) {
@@ -38,7 +39,7 @@ listener::listener(net::io_context &ioc, const tcp::endpoint &ep) : ioc_(ioc), a
 
 void listener::run() {
 
-    std::cout << "Start listening....!!!!" << std::endl;
+    reportLog("Start listening....!!!!");
 
     auto self = shared_from_this();
     acc_.async_accept(net::make_strand(ioc_),

@@ -27,6 +27,8 @@ add_executable(XYServer src/main.cpp
         src/http/businessHandler/b_register.h
         src/http/businessHandler/b_login.cpp
         src/http/businessHandler/b_login.h
+        src/utils.cpp
+        src/utils.h
 )
 
 target_link_libraries(${PROJECT_NAME}
