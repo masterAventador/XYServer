@@ -38,8 +38,7 @@ payloader::generate(PHM::request& req,PHM::code& c,std::string& errMsg) {
         case PHM::login:
             return b_login::response(*dynamic_pointer_cast<PHM::Login>(req_payload_cls),c,errMsg);
         default:
-            break;
+            return nullptr;
     }
-
 }
 
