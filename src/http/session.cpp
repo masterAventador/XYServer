@@ -26,12 +26,9 @@ void session::do_read() {
 
 void session::on_read(beast::error_code ec, std::size_t byte_transferred) {
     boost::ignore_unused(byte_transferred);
-    if (ec == http::error::end_of_stream) {
-        return close();
-    }
     if (ec) {
         reportError(ec, "session_read");
-        return;
+        return close();
     }
 
     do_write();
@@ -59,8 +56,14 @@ void session::did_write(bool keep_alive, beast::error_code ec, std::size_t byte_
     }
 }
 
+
 void session::close() {
-    stream_.socket().shutdown(boost::asio::socket_base::shutdown_both);
+    stream_.socket().shutdown(net::socket_base::shutdown_both);
+    beast::error_code ec;
+    stream_.socket().close(ec);
+    if (ec) {
+        reportError(ec,"close");
+    }
 }
 
 http::message_generator session::make_response(const http::request<http::string_body> &req) {
