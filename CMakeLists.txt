@@ -8,7 +8,9 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/local_bin CACHE PATH
 
 find_package(Boost REQUIRED)
 find_package(protobuf REQUIRED)
+find_package(libpqxx REQUIRED)
 
+#add_subdirectory(ThirdLibs/MMKV/POSIX/src mmkv)
 
 add_executable(XYServer src/main.cpp
         src/http/listener.cpp
@@ -23,18 +25,22 @@ add_executable(XYServer src/main.cpp
         src/http/payloader.cpp
         src/http/payloader.h
         src/http/http_errorMsg.h
-        src/http/businessHandler/b_register.cpp
-        src/http/businessHandler/b_register.h
-        src/http/businessHandler/b_login.cpp
-        src/http/businessHandler/b_login.h
+        src/http/BusinessHandler/b_register.cpp
+        src/http/BusinessHandler/b_register.h
+        src/http/BusinessHandler/b_login.cpp
+        src/http/BusinessHandler/b_login.h
         src/utils.cpp
         src/utils.h
+        src/http/UDC/udc.cpp
+        src/http/UDC/udc.h
 )
 
 target_link_libraries(${PROJECT_NAME}
         # conan packages
         boost::boost
         protobuf::protobuf
+        libpqxx::pqxx
 
         #custom packages
+#        mmkv
 )
