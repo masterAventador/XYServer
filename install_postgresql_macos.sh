@@ -32,6 +32,10 @@ start_postgresql_service() {
   echo 'Starting PostgreSQL service...'
 #  brew service start postgresql  # I don't want PostgreSQL to start immediately after the system starts every time.
   pg_ctl -D /opt/homebrew/var/$POSTGRESQL start
+
+  # create a super user
+  psql -d postgres
+  CREATE USER postgres WITH SUPERUSER CREATEDB CREATEROLE PASSWORD 'secret';
 }
 
 main() {

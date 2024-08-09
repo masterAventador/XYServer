@@ -31,8 +31,8 @@ add_executable(XYServer src/main.cpp
         src/http/BusinessHandler/b_login.h
         src/utils.cpp
         src/utils.h
-        src/http/UDC/udc.cpp
-        src/http/UDC/udc.h
+        src/http/DB/db.cpp
+        src/http/DB/db.h
 )
 
 target_link_libraries(${PROJECT_NAME}

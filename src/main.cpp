@@ -2,8 +2,13 @@
 #include "http/listener.h"
 #include <thread>
 
+#include "http/DB/db.h"
 
 int main() {
+
+    db::create_database("user_list");
+
+    /************************************/
     const unsigned port = 8080;
     const int threads = 5;
 
