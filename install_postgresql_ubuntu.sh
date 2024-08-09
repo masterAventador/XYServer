@@ -30,6 +30,10 @@ start_postgresql_service() {
   echo 'Starting PostgreSQL service...'
   sudo systemctl start postgresql
   sudo systemctl enable postgresql
+
+  # create a super user
+  psql -d postgres
+  CREATE USER postgres WITH SUPERUSER CREATEDB CREATEROLE PASSWORD 'secret';
 }
 
 main() {
